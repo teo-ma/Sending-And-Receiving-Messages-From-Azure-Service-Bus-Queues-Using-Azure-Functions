@@ -181,87 +181,50 @@ called \"AzureWebJobsServiceBus\" and paste the connection string of our
 Service bus resource.
 
 ```
-  {  
-
-      \"IsEncrypted\": **false**,  
-
-    \"Values\": {  
-
-      \"AzureWebJobsStorage\": \"UseDevelopmentStorage=true\",  
-
-      \"FUNCTIONS_WORKER_RUNTIME\": \"dotnet\",  
-
-      \"AzureWebJobsServiceBus\": \"\<replace your
-    > RootManageSharedAccessKey here>\"
-
-    }  
-
-  }  
+{  
+    "IsEncrypted": false,  
+  "Values": {  
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",  
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",  
+    "AzureWebJobsServiceBus": "<replace your RootManageSharedAccessKey here>"
+  }  
+} 
 ```
 Now add the below code to send a message to the queue using output
 bindings.
 ```
-    **using** System.IO;  
+    using System.IO;  
+using System.Text;  
+using System.Threading.Tasks;  
+using Microsoft.AspNetCore.Http;  
+using Microsoft.Azure.WebJobs;  
+using Microsoft.Azure.WebJobs.Extensions.Http;  
+using Microsoft.Azure.WebJobs.ServiceBus;  
+using Microsoft.Extensions.Logging;  
+  
+namespace AzServiceBusDemo  
+{  
+    public static class SendMessage  
+    {  
+        [FunctionName("SendMessage")]  
+        [return: ServiceBus("az-queue", EntityType.Queue)]  
+        public static async Task<string> Run(  
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,  
+            ILogger log)  
+        {  
+            log.LogInformation("SendMessage function requested");  
+            string body = string.Empty;  
+            using (var reader = new StreamReader(req.Body, Encoding.UTF8))  
+            {  
+                body = await reader.ReadToEndAsync();  
+                log.LogInformation($"Message body : {body}");  
+            }  
+            log.LogInformation($"SendMessage processed.");  
+            return body;  
+        }  
+    }  
+} 
 
-    **using** System.Text;  
-
-    **using** System.Threading.Tasks;  
-
-    **using** Microsoft.AspNetCore.Http;  
-
-    **using** Microsoft.Azure.WebJobs;  
-
-    **using** Microsoft.Azure.WebJobs.Extensions.Http;  
-
-    **using** Microsoft.Azure.WebJobs.ServiceBus;  
-
-    **using** Microsoft.Extensions.Logging;  
-
-      
-
-    **namespace** AzServiceBusDemo  
-
-    {  
-
-        **public** **static** **class** SendMessage  
-
-        {  
-
-            \[FunctionName(\"SendMessage\")\]  
-
-            \[**return**: ServiceBus(\"az-queue\", EntityType.Queue)\]  
-
-            **public** **static** async Task\<**string**\> Run(  
-
-                \[HttpTrigger(AuthorizationLevel.Anonymous, \"post\", Route = **null**)\] HttpRequest req,  
-
-                ILogger log)  
-
-            {  
-
-                log.LogInformation(\"SendMessage function requested\");  
-
-                **string** body = **string**.Empty;  
-
-                **using** (var reader = **new** StreamReader(req.Body, Encoding.UTF8))  
-
-                {  
-
-                    body = await reader.ReadToEndAsync();  
-
-                    log.LogInformation(\$\"Message body : {body}\");  
-
-                }  
-
-                log.LogInformation(\$\"SendMessage processed.\");  
-
-                **return** body;  
-
-            }  
-
-        }  
-
-    }  
 ```
 -   From lines 21-28, we are just getting data from the request body &
     assigned it to a local variable. After that, we are just returning
@@ -348,35 +311,22 @@ Azure Functions](media/image23.png)
  
 
 That\'s it \-- our Service Bus trigger function is created.
+
 ```
-
-  **using** Microsoft.Azure.WebJobs;  
-
-  **using** Microsoft.Extensions.Logging;  
-
-    
-
-  **namespace** AzServiceBusDemo  
-
-  {  
-
-      **public** **static** **class** ReadMessageFromQueue  
-
-      {  
-
-          \[FunctionName(\"ReadMessageFromQueue\")\]  
-
-          **public** **static** **void** Run(\[ServiceBusTrigger(\"az-queue\")\]**string** myQueueItem, ILogger log)  
-
-         {  
-
-             log.LogInformation(\$\"C# ServiceBus queue trigger function processed message: {myQueueItem}\");  
-
-         }  
-
-     }  
-
- }  
+using Microsoft.Azure.WebJobs;  
+using Microsoft.Extensions.Logging;  
+  
+namespace AzServiceBusDemo  
+{  
+    public static class ReadMessageFromQueue  
+    {  
+        [FunctionName("ReadMessageFromQueue")]  
+        public static void Run([ServiceBusTrigger("az-queue")]string myQueueItem, ILogger log)  
+        {  
+            log.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");  
+        }  
+    }  
+} 
 
 ```
 Now run our function app. Since we already have one active message in
