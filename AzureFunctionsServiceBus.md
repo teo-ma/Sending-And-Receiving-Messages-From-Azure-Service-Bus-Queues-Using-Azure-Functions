@@ -1,3 +1,6 @@
+
+# Sending And  Receiving Messages From Azure Service Bus Queues Using Azure Functions
+
 Introduction
 
  
@@ -50,9 +53,7 @@ parts,
     from Queue
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image1.png){width="5.768055555555556in"
-height="1.7458333333333333in"}
-
+Azure Functions](media/image1.png)
  
 
 Create Azure Service Bus Queue using Azure Portal
@@ -68,14 +69,12 @@ Azure.
 -   In the search box type service bus and select it. \
     \
     ![How To Send And Read Messages From Azure Service Bus Queues Using
-    Azure Functions](media/image2.png){width="5.768055555555556in"
-    height="3.2680555555555557in"}
+    Azure Functions](media/image2.png)
 
 -   Click on Create button. You will see the Create Namespace page.\
     \
     ![How To Send And Read Messages From Azure Service Bus Queues Using
-    Azure Functions](media/image3.png){width="5.768055555555556in"
-    height="4.300694444444445in"}\
+    Azure Functions](media/image3.png)
     \
     Resource Group are nothing but a container to hold your resources in
     Azure. Service Bus is one of the resource so if you have already
@@ -89,35 +88,30 @@ Azure.
     button\
     \
     ![How To Send And Read Messages From Azure Service Bus Queues Using
-    Azure Functions](media/image4.png){width="5.768055555555556in"
-    height="4.4430555555555555in"}
+    Azure Functions](media/image4.png)
 
 -   Review that everything is added properly and finally click on the
     Create button.\
     \
     ![How To Send And Read Messages From Azure Service Bus Queues Using
-    Azure Functions](media/image5.png){width="5.768055555555556in"
-    height="6.709027777777778in"}
+    Azure Functions](media/image5.png)
 
 -   Creating resources will take time so wait for some time to finish
     the deployment.\
     \
     ![How To Send And Read Messages From Azure Service Bus Queues Using
-    Azure Functions](media/image6.png){width="5.768055555555556in"
-    height="2.5340277777777778in"}
+    Azure Functions](media/image6.png)
 
 -   Once the deployment is completed you will see the Go to resource
     button.\
     \
     ![How To Send And Read Messages From Azure Service Bus Queues Using
-    Azure Functions](media/image7.png){width="5.768055555555556in"
-    height="2.2694444444444444in"}
+    Azure Functions](media/image7.png)
 
 -   Click on Go to resource button to see our Service Bus resource.\
     \
     ![How To Send And Read Messages From Azure Service Bus Queues Using
-    Azure Functions](media/image8.png){width="5.768055555555556in"
-    height="2.8333333333333335in"}
+    Azure Functions](media/image8.png)
 
 -   So we have successfully created a new Service Bus. Now next step is
     to create a Queue. Go to the Queues section in the left panel and
@@ -125,14 +119,12 @@ Azure.
     Create button.\
     \
     ![How To Send And Read Messages From Azure Service Bus Queues Using
-    Azure Functions](media/image9.png){width="5.768055555555556in"
-    height="2.561111111111111in"}
+    Azure Functions](media/image9.png)
 
 -   That\'s it. We have created our first queue.\
     \
     ![How To Send And Read Messages From Azure Service Bus Queues Using
-    Azure Functions](media/image10.png){width="5.768055555555556in"
-    height="2.73125in"}
+    Azure Functions](media/image10.png)
 
 Create HTTP trigger Azure Function to send the message into Queue
 
@@ -149,8 +141,7 @@ click on Next.
  
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image11.png){width="5.768055555555556in"
-height="3.825in"}
+Azure Functions](media/image11.png)
 
  
 
@@ -159,8 +150,7 @@ Give a name to the function project and click on Create.
  
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image12.png){width="5.768055555555556in"
-height="3.8048611111111112in"}
+Azure Functions](media/image12.png)
 
  
 
@@ -170,8 +160,7 @@ Anonymous and click on Create.
  
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image13.png){width="5.768055555555556in"
-height="3.872916666666667in"}
+Azure Functions](media/image13.png)
 
  
 
@@ -180,8 +169,7 @@ name of the function is Function1.cs so now change it to
 \"SendMessage\".
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image14.png){width="5.768055555555556in"
-height="2.8194444444444446in"}
+Azure Functions](media/image14.png)
 
  
 
@@ -204,8 +192,7 @@ RootManagedSharedAccessKey
  
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image15.png){width="5.768055555555556in"
-height="2.609027777777778in"}
+Azure Functions](media/image15.png)
 
  
 
@@ -214,8 +201,7 @@ First, install the below NuGet package,
  
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image16.png){width="5.768055555555556in"
-height="0.9125in"}
+Azure Functions](media/image16.png)
 
  
 
@@ -223,88 +209,89 @@ Open the local.settings.json file in our function app and add a key
 called \"AzureWebJobsServiceBus\" and paste the connection string of our
 Service bus resource.
 
-1.  {  
+```
+  {  
 
-2.      \"IsEncrypted\": **false**,  
+      \"IsEncrypted\": **false**,  
 
-3.    \"Values\": {  
+    \"Values\": {  
 
-4.      \"AzureWebJobsStorage\": \"UseDevelopmentStorage=true\",  
+      \"AzureWebJobsStorage\": \"UseDevelopmentStorage=true\",  
 
-5.      \"FUNCTIONS_WORKER_RUNTIME\": \"dotnet\",  
+      \"FUNCTIONS_WORKER_RUNTIME\": \"dotnet\",  
 
-6.      \"AzureWebJobsServiceBus\": \"\<replace your
+      \"AzureWebJobsServiceBus\": \"\<replace your
     > RootManageSharedAccessKey here>\"
 
-7.    }  
+    }  
 
-8.  }  
-
+  }  
+```
 Now add the below code to send a message to the queue using output
 bindings.
+```
+    **using** System.IO;  
 
-1.  **using** System.IO;  
+    **using** System.Text;  
 
-2.  **using** System.Text;  
+    **using** System.Threading.Tasks;  
 
-3.  **using** System.Threading.Tasks;  
+    **using** Microsoft.AspNetCore.Http;  
 
-4.  **using** Microsoft.AspNetCore.Http;  
+    **using** Microsoft.Azure.WebJobs;  
 
-5.  **using** Microsoft.Azure.WebJobs;  
+    **using** Microsoft.Azure.WebJobs.Extensions.Http;  
 
-6.  **using** Microsoft.Azure.WebJobs.Extensions.Http;  
+    **using** Microsoft.Azure.WebJobs.ServiceBus;  
 
-7.  **using** Microsoft.Azure.WebJobs.ServiceBus;  
+    **using** Microsoft.Extensions.Logging;  
 
-8.  **using** Microsoft.Extensions.Logging;  
+      
 
-9.    
+    **namespace** AzServiceBusDemo  
 
-10. **namespace** AzServiceBusDemo  
+    {  
 
-11. {  
+        **public** **static** **class** SendMessage  
 
-12.     **public** **static** **class** SendMessage  
+        {  
 
-13.     {  
+            \[FunctionName(\"SendMessage\")\]  
 
-14.         \[FunctionName(\"SendMessage\")\]  
+            \[**return**: ServiceBus(\"az-queue\", EntityType.Queue)\]  
 
-15.         \[**return**: ServiceBus(\"az-queue\", EntityType.Queue)\]  
+            **public** **static** async Task\<**string**\> Run(  
 
-16.         **public** **static** async Task\<**string**\> Run(  
+                \[HttpTrigger(AuthorizationLevel.Anonymous, \"post\", Route = **null**)\] HttpRequest req,  
 
-17.             \[HttpTrigger(AuthorizationLevel.Anonymous, \"post\", Route = **null**)\] HttpRequest req,  
+                ILogger log)  
 
-18.             ILogger log)  
+            {  
 
-19.         {  
+                log.LogInformation(\"SendMessage function requested\");  
 
-20.             log.LogInformation(\"SendMessage function requested\");  
+                **string** body = **string**.Empty;  
 
-21.             **string** body = **string**.Empty;  
+                **using** (var reader = **new** StreamReader(req.Body, Encoding.UTF8))  
 
-22.             **using** (var reader = **new** StreamReader(req.Body, Encoding.UTF8))  
+                {  
 
-23.             {  
+                    body = await reader.ReadToEndAsync();  
 
-24.                 body = await reader.ReadToEndAsync();  
+                    log.LogInformation(\$\"Message body : {body}\");  
 
-25.                 log.LogInformation(\$\"Message body : {body}\");  
+                }  
 
-26.             }  
+                log.LogInformation(\$\"SendMessage processed.\");  
 
-27.             log.LogInformation(\$\"SendMessage processed.\");  
+                **return** body;  
 
-28.             **return** body;  
+            }  
 
-29.         }  
+        }  
 
-30.     }  
-
-31. }  
-
+    }  
+```
 -   From lines 21-28, we are just getting data from the request body &
     assigned it to a local variable. After that, we are just returning
     it from function. 
@@ -319,8 +306,7 @@ Now run the SendMessage function.
  
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image17.png){width="5.768055555555556in"
-height="1.6166666666666667in"}
+Azure Functions](media/image17.png)
 
  
 
@@ -329,8 +315,7 @@ For testing the function open postman and hit the about function URL. 
  
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image18.png){width="5.768055555555556in"
-height="1.7458333333333333in"}
+Azure Functions](media/image18.png)
 
  
 
@@ -339,8 +324,7 @@ Since we logged our request body, we can see the content.
  
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image19.png){width="5.768055555555556in"
-height="2.329861111111111in"}
+Azure Functions](media/image19.png)
 
  
 
@@ -350,8 +334,7 @@ showing as 1. 
  
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image20.png){width="5.768055555555556in"
-height="2.472916666666667in"}
+Azure Functions](media/image20.png)
 
  
 
@@ -362,8 +345,7 @@ click on the message to see the content.
  
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image21.png){width="5.768055555555556in"
-height="2.092361111111111in"}
+Azure Functions](media/image21.png)
 
  
 
@@ -380,8 +362,7 @@ a name and click on Add button.
  
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image22.png){width="5.768055555555556in"
-height="3.546527777777778in"}
+Azure Functions](media/image22.png)
 
  
 
@@ -391,41 +372,42 @@ Add button.
  
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image23.png){width="5.768055555555556in"
-height="3.8048611111111112in"}
+Azure Functions](media/image23.png)
 
  
 
 That\'s it \-- our Service Bus trigger function is created.
+```
 
-1.  **using** Microsoft.Azure.WebJobs;  
+  **using** Microsoft.Azure.WebJobs;  
 
-2.  **using** Microsoft.Extensions.Logging;  
+  **using** Microsoft.Extensions.Logging;  
 
-3.    
+    
 
-4.  **namespace** AzServiceBusDemo  
+  **namespace** AzServiceBusDemo  
 
-5.  {  
+  {  
 
-6.      **public** **static** **class** ReadMessageFromQueue  
+      **public** **static** **class** ReadMessageFromQueue  
 
-7.      {  
+      {  
 
-8.          \[FunctionName(\"ReadMessageFromQueue\")\]  
+          \[FunctionName(\"ReadMessageFromQueue\")\]  
 
-9.          **public** **static** **void** Run(\[ServiceBusTrigger(\"az-queue\")\]**string** myQueueItem, ILogger log)  
+          **public** **static** **void** Run(\[ServiceBusTrigger(\"az-queue\")\]**string** myQueueItem, ILogger log)  
 
-10.         {  
+         {  
 
-11.             log.LogInformation(\$\"C# ServiceBus queue trigger function processed message: {myQueueItem}\");  
+             log.LogInformation(\$\"C# ServiceBus queue trigger function processed message: {myQueueItem}\");  
 
-12.         }  
+         }  
 
-13.     }  
+     }  
 
-14. }  
+ }  
 
+```
 Now run our function app. Since we already have one active message in
 our queue, as soon as the function starts it will read a message from
 the queue as shown below,
@@ -433,8 +415,7 @@ the queue as shown below,
  
 
 ![How To Send And Read Messages From Azure Service Bus Queues Using
-Azure Functions](media/image24.png){width="5.768055555555556in"
-height="2.479861111111111in"}
+Azure Functions](media/image24.png)
 
  
 
